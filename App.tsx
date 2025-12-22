@@ -251,7 +251,7 @@ const App: React.FC = () => {
           <img 
             src="/FDR_Logo.png" 
             alt="Flying Dragon Records Logo" 
-            className="h-20 md:h-36 lg:h-44 w-auto mb-6 drop-shadow-[0_0_20px_rgba(212,175,55,0.6)]" 
+            className="h-30 md:h-54 lg:h-66 w-auto mb-6 drop-shadow-[0_0_20px_rgba(212,175,55,0.6)]" 
           />
           <p className="font-metal text-lg md:text-xl text-white tracking-[0.3em] uppercase opacity-90 mb-6 drop-shadow-lg">
             rare metal & hardrock records
@@ -301,7 +301,7 @@ const App: React.FC = () => {
       <footer className="bg-[#050505] border-t border-zinc-900 py-12 px-4 mt-20">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 text-center md:text-left">
           <div className="flex flex-col items-center md:items-start">
-            <img src="/FDR_Logo.png" alt="Flying Dragon Records Logo" className="h-10 w-auto mb-4 opacity-80" />
+            <img src="/FDR_Logo.png" alt="Flying Dragon Records Logo" className="h-15 w-auto mb-4 opacity-80" />
             <p className="text-zinc-400 text-xs leading-relaxed max-w-xs">Direct access to the heaviest vinyl releases. Inventory synced live from the main vault.</p>
           </div>
           <div>
