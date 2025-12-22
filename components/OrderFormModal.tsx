@@ -100,13 +100,8 @@ const OrderFormModal: React.FC<OrderFormModalProps> = ({ isOpen, onClose, items,
             </div>
 
             <div className="mt-10 pt-10 border-t border-zinc-800 space-y-6">
-              <div className="bg-[#b22222]/10 border-2 border-[#b22222]/40 p-6 rounded-sm">
-                 <p className="text-[11px] text-white uppercase tracking-[0.2em] font-black text-center leading-relaxed">
-                    The Archive Master will contact you shortly via email to finalize logistics and tithes.
-                 </p>
-              </div>
               <button onClick={() => setShowSummary(false)} className="w-full border-2 border-zinc-800 text-zinc-400 hover:text-white hover:border-[#d4af37] text-[11px] font-black uppercase tracking-[0.4em] py-5 text-center transition-all">
-                Return to Editor
+                Return to Order Form
               </button>
             </div>
           </div>
