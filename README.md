@@ -1,20 +1,45 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Flying Dragon Records - Live Inventory Portal
 
-# Run and deploy your AI Studio app
+Bespoke web application for browsing rare metal and hardrock records, synced live from a Google Sheet inventory.
 
-This contains everything you need to run your app locally.
+## 🚀 Quick Start
 
-View your app in AI Studio: https://ai.studio/apps/drive/1CErDWyKrF2ltL1nrU_NT3yfdzZnks-iB
+### Prerequisites
+- [Node.js](https://nodejs.org/) (Latest LTS recommended)
 
-## Run Locally
+### Local Development
+1. **Clone and Navigate**:
+   ```bash
+   cd FDR
+   ```
 
-**Prerequisites:**  Node.js
+2. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
 
+3. **Configure Environment**:
+   Create a `.env` file in the `FDR` directory (I have already created one for you) and add your Google Sheet URL:
+   ```env
+   VITE_GOOGLE_SHEET_CSV_URL=your_google_sheet_link_here
+   ```
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+4. **Launch the Vault**:
+   ```bash
+   npm run dev
+   ```
+   The app will be available at `http://localhost:5173`.
+
+## 🛠 Configuration
+
+### Google Sheet Setup
+To use your own inventory:
+1. Create a Google Sheet with the required columns (Artist, Title, Genre, Price, etc.).
+2. Ensure the sheet is shared as **"Anyone with the link can view"**.
+3. Copy the URL and paste it into your `.env` file as `VITE_GOOGLE_SHEET_CSV_URL`.
+
+### Automated Sync
+The portal automatically fetches and parses the latest data from the spreadsheet every 10 minutes.
+
+## 🔒 Security
+Sensitive URLs are managed via environment variables and are excluded from version control via `.gitignore`.

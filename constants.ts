@@ -5,12 +5,10 @@ export const GENRES: Genre[] = ['All', 'Metal', 'Hardrock', 'Thrash', 'Death Met
 
 /**
  * Access the Google Sheet CSV URL from environment variables.
- * In your Render.com Dashboard, set GOOGLE_SHEET_CSV_URL to your spreadsheet link.
+ * In your Render.com Dashboard, set VITE_GOOGLE_SHEET_CSV_URL to your spreadsheet link.
  * The App will automatically normalize it to a CSV export format.
  */
-export const GOOGLE_SHEET_CSV_URL = 
-  import.meta.env.VITE_GOOGLE_SHEET_CSV_URL || 
-  'https://docs.google.com/spreadsheets/d/1G82EFQ-uuVTbkEMO5HjHyLS7EReswPBvq48G_83J7P4/edit?usp=sharing';
+export const GOOGLE_SHEET_CSV_URL = import.meta.env.VITE_GOOGLE_SHEET_CSV_URL || '';
 
 export const MOCK_RECORDS = [
   {
