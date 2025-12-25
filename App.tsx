@@ -221,8 +221,17 @@ const App: React.FC = () => {
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className="min-h-screen flex flex-col selection:bg-[#b22222] selection:text-white">
-      <button 
+    <div className="min-h-screen flex flex-col selection:bg-[#b22222] selection:text-white relative">
+      {/* Background Watermark */}
+      <div className="fixed inset-0 pointer-events-none flex items-center justify-center z-0 overflow-hidden">
+        <img
+          src="/FDR_Logo.png"
+          alt=""
+          className="w-[90%] max-w-6xl h-auto object-contain opacity-[0.08] grayscale contrast-[1.2]"
+        />
+      </div>
+
+      <button
         onClick={() => setIsCartOpen(true)}
         className="fixed bottom-8 right-8 z-40 bg-[#b22222] text-white w-16 h-16 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all group"
       >
