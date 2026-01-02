@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Custom styles for Flying Dragon Records */
 :root {
   --gold: #d4af37;
