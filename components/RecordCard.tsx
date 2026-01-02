@@ -42,6 +42,8 @@ const RecordCard: React.FC<RecordCardProps> = ({ record, onAddToCart, onViewDeta
           src={record.imageUrls[currentImgIndex]}
           alt={`${record.artist} - ${record.title}`}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          loading="lazy"
+          decoding="async"
           onError={(e) => {
             (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1603048588665-791ca8aea617?q=80&w=600&auto=format&fit=crop';
           }}

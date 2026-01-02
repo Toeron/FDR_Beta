@@ -58,11 +58,13 @@ const RecordDetailsModal: React.FC<RecordDetailsModalProps> = ({ record, onClose
             onMouseLeave={() => setIsHovering(false)}
           >
           {record.imageUrls.map((url, i) => (
-            <img 
+            <img
               key={`${record.id}-img-${i}`}
-              src={url} 
-              alt={`${record.artist} - ${record.title} - Image ${i + 1}`} 
+              src={url}
+              alt={`${record.artist} - ${record.title} - Image ${i + 1}`}
               className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-in-out hover:scale-110 ${i === imgIndex ? 'opacity-100 scale-100' : 'opacity-0 scale-105 pointer-events-none'}`}
+              loading={i === imgIndex ? "eager" : "lazy"}
+              decoding="async"
               onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1603048588665-791ca8aea617?q=80&w=600&auto=format&fit=crop'; }}
             />
           ))}
