@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles for Flying Dragon Records */
+:root {
+  --gold: #d4af37;
+  --dragon-red: #b22222;
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ensure input styles match design without using Tailwind @apply */
+input[type="text"] {
+  outline: none;
+  box-shadow: none;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  box-shadow: none;
+}
