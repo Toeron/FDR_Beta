@@ -6,11 +6,7 @@ export interface Record {
   artist: string;
   title: string;
   genre: Genre;
-<<<<<<< HEAD
   price: number | 'Upon Request' | 'Sold Out';
-=======
-  price: number | 'Upon Request';
->>>>>>> origin/main
   condition: string;
   imageUrls: string[];
   stockCount: number;

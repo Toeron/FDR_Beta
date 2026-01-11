@@ -12,11 +12,8 @@ import RecordDetailsModal from './components/RecordDetailsModal';
  */
 const normalizeSheetUrl = (url: string): string => {
   if (!url) return '';
-<<<<<<< HEAD
   const match = url.match(/[-\w]{25,}/);
-=======
-  const match = url.match(/[-\w]{25,}/); 
->>>>>>> origin/main
+
   if (match && match[0]) {
     return `https://docs.google.com/spreadsheets/d/${match[0]}/export?format=csv`;
   }
@@ -64,17 +61,9 @@ const parseCSV = (csvText: string): Record[] => {
     rows.push(currentRow);
   }
   if (rows.length < 2) return [];
-<<<<<<< HEAD
-
   const headers = rows[0].map(h => h.trim().toLowerCase().replace(/["']/g, ''));
   const getIndex = (possibleNames: string[]) => headers.findIndex(h => possibleNames.some(name => h.includes(name)));
 
-=======
-  
-  const headers = rows[0].map(h => h.trim().toLowerCase().replace(/["']/g, ''));
-  const getIndex = (possibleNames: string[]) => headers.findIndex(h => possibleNames.some(name => h.includes(name)));
-  
->>>>>>> origin/main
   const indices = {
     artist: getIndex(['artist', 'band']),
     title: getIndex(['title', 'album', 'record']),
@@ -101,8 +90,6 @@ const parseCSV = (csvText: string): Record[] => {
 
   return rows.slice(1).map((rowValues, rowIndex) => {
     const clean = (idx: number) => (idx < 0 || idx >= rowValues.length) ? '' : rowValues[idx].trim().replace(/^"|"$/g, '');
-<<<<<<< HEAD
-
     const priceRaw = clean(indices.price).toLowerCase();
     const isSoldOut = priceRaw.includes('sold out') || priceRaw.includes('uitverkocht');
     const isUponRequest = priceRaw.includes('request') || priceRaw.includes('aanvraag');
@@ -115,17 +102,6 @@ const parseCSV = (csvText: string): Record[] => {
 
     const stock = parseInt(clean(indices.stockCount)) || 0;
 
-=======
-    
-    const priceRaw = clean(indices.price);
-    const isUponRequest = priceRaw.toLowerCase().includes('request');
-    const price: number | 'Upon Request' = isUponRequest 
-      ? 'Upon Request' 
-      : (parseFloat(priceRaw.replace(/[^\d.-]/g, '')) || 0);
-
-    const stock = parseInt(clean(indices.stockCount)) || 0;
-    
->>>>>>> origin/main
     const imageIndices = [indices.imageStart, indices.imageStart + 1, indices.imageStart + 2, indices.imageStart + 3];
     let collectedUrls: string[] = [];
     imageIndices.forEach(colIdx => {
@@ -135,18 +111,13 @@ const parseCSV = (csvText: string): Record[] => {
         collectedUrls = [...collectedUrls, ...urlsInCell];
       }
     });
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> origin/main
     const finalImageUrls = collectedUrls.length > 0 ? collectedUrls : ['https://images.unsplash.com/photo-1603048588665-791ca8aea617?q=80&w=600&auto=format&fit=crop'];
     const artist = clean(indices.artist) || 'Unknown Artist';
     const title = clean(indices.title) || 'Untitled Album';
 
     return {
       id: `record-${rowIndex}`,
-<<<<<<< HEAD
       artist,
       title,
       catalogNumber: clean(indices.catalogNumber) || undefined,
@@ -156,17 +127,7 @@ const parseCSV = (csvText: string): Record[] => {
       imageUrls: finalImageUrls,
       stockCount: stock,
       buyLink: clean(indices.buyLink) || `mailto:Kips1963@gmail.com?subject=Inquiry: ${artist} - ${title}`,
-=======
-      artist, 
-      title, 
-      catalogNumber: clean(indices.catalogNumber) || undefined,
-      genre: (clean(indices.genre) as any) || 'Metal', 
-      price, 
-      condition: clean(indices.condition) || 'N/A', 
-      imageUrls: finalImageUrls, 
-      stockCount: stock, 
-      buyLink: clean(indices.buyLink) || `mailto:Kips1963@gmail.com?subject=Inquiry: ${artist} - ${title}`, 
->>>>>>> origin/main
+
       tracklist: indices.tracklist !== -1 ? clean(indices.tracklist) : undefined,
       notes: clean(indices.notes) || undefined
     };
@@ -196,25 +157,14 @@ const App: React.FC = () => {
       setLoading(true);
       const separator = normalizedUrl.includes('?') ? '&' : '?';
       const fetchUrl = `${normalizedUrl}${separator}t=${Date.now()}`;
-<<<<<<< HEAD
 
-=======
-      
->>>>>>> origin/main
       const response = await fetch(fetchUrl);
 
       if (!response.ok) {
         throw new Error(`Sync Error: ${response.status}. Ensure your Sheet is Public.`);
       }
-<<<<<<< HEAD
-
       const text = await response.text();
 
-=======
-      
-      const text = await response.text();
-      
->>>>>>> origin/main
       if (text.trim().toLowerCase().startsWith('<!doctype html')) {
         throw new Error('Access Denied: Sheet is private.');
       }
@@ -236,11 +186,8 @@ const App: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-<<<<<<< HEAD
     const interval = setInterval(fetchData, 10 * 60 * 1000);
-=======
-    const interval = setInterval(fetchData, 10 * 60 * 1000); 
->>>>>>> origin/main
+
     return () => clearInterval(interval);
   }, []);
 
@@ -248,13 +195,9 @@ const App: React.FC = () => {
     return records.filter(record => {
       const query = filters.searchQuery.toLowerCase();
       return (
-<<<<<<< HEAD
         record.artist.toLowerCase().includes(query) ||
         record.title.toLowerCase().includes(query) ||
-=======
-        record.artist.toLowerCase().includes(query) || 
-        record.title.toLowerCase().includes(query) || 
->>>>>>> origin/main
+
         record.genre.toLowerCase().includes(query) ||
         (record.catalogNumber && record.catalogNumber.toLowerCase().includes(query))
       );
@@ -298,33 +241,20 @@ const App: React.FC = () => {
         className="fixed bottom-8 right-8 z-40 bg-[#b22222] text-white w-16 h-16 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all group"
       >
         <div className="relative">
-<<<<<<< HEAD
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
-=======
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
->>>>>>> origin/main
+
           {cartCount > 0 && <span className="absolute -top-3 -right-3 bg-white text-[#b22222] text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center animate-in zoom-in">{cartCount}</span>}
         </div>
       </button>
 
       <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} items={cart} onUpdateQuantity={updateQuantity} onRemove={removeFromCart} />
-<<<<<<< HEAD
-
       {selectedRecord && (
         <RecordDetailsModal
           key={selectedRecord.id}
           record={selectedRecord}
           onClose={() => setSelectedRecord(null)}
           onAddToCart={addToCart}
-=======
-      
-      {selectedRecord && (
-        <RecordDetailsModal 
-          key={selectedRecord.id}
-          record={selectedRecord} 
-          onClose={() => setSelectedRecord(null)} 
-          onAddToCart={addToCart} 
->>>>>>> origin/main
+
         />
       )}
 
@@ -333,11 +263,8 @@ const App: React.FC = () => {
           <div className="w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent animate-pulse" />
         </div>
         <div className="max-w-7xl mx-auto relative z-10 text-center flex flex-col items-center">
-<<<<<<< HEAD
           <img
-=======
-          <img 
->>>>>>> origin/main
+
             src="/FDR_Logo.png"
             alt="Flying Dragon Records Logo"
             className="h-[10.743rem] md:h-[19.531rem] lg:h-[24.414rem] w-auto mb-6 drop-shadow-[0_0_20px_rgba(212,175,55,0.6)]"
@@ -362,11 +289,7 @@ const App: React.FC = () => {
             <button onClick={fetchData} className="text-[10px] bg-[#b22222] text-white px-6 py-2.5 hover:bg-white hover:text-black transition-all font-black tracking-widest shadow-xl">RETRY SYNC</button>
           </div>
         )}
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> origin/main
         {loading && records.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-40">
             <div className="w-16 h-16 border-4 border-zinc-800 border-t-[#d4af37] rounded-full animate-spin mb-6" />
