@@ -31,10 +31,16 @@ const RecordCard: React.FC<RecordCardProps> = ({ record, onAddToCart, onViewDeta
 
   const hasMultipleImages = record.imageUrls.length > 1;
   const isUponRequest = record.price === 'Upon Request';
+<<<<<<< HEAD
   const isSoldOut = record.price === 'Sold Out';
 
   return (
     <div
+=======
+
+  return (
+    <div 
+>>>>>>> origin/main
       onClick={() => onViewDetails(record)}
       className="group relative bg-[#151515] border border-zinc-800 hover:border-[#d4af37] transition-all duration-300 rounded-sm overflow-hidden flex flex-col h-full shadow-2xl cursor-pointer"
     >
@@ -49,6 +55,7 @@ const RecordCard: React.FC<RecordCardProps> = ({ record, onAddToCart, onViewDeta
             (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1603048588665-791ca8aea617?q=80&w=600&auto=format&fit=crop';
           }}
         />
+<<<<<<< HEAD
 
         {isSoldOut && (
           <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] flex items-center justify-center z-10 pointer-events-none">
@@ -61,34 +68,62 @@ const RecordCard: React.FC<RecordCardProps> = ({ record, onAddToCart, onViewDeta
         {hasMultipleImages && (
           <div className="absolute inset-0 flex items-center justify-between px-2 opacity-0 group-hover:opacity-100 transition-opacity">
             <button
+=======
+        
+        {hasMultipleImages && (
+          <div className="absolute inset-0 flex items-center justify-between px-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button 
+>>>>>>> origin/main
               onClick={prevImg}
               className="bg-black/70 hover:bg-[#d4af37] text-white hover:text-black p-1.5 rounded-full transition-colors backdrop-blur-sm border border-white/10"
               aria-label="Previous image"
             >
+<<<<<<< HEAD
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
             </button>
             <button
+=======
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <button 
+>>>>>>> origin/main
               onClick={nextImg}
               className="bg-black/70 hover:bg-[#d4af37] text-white hover:text-black p-1.5 rounded-full transition-colors backdrop-blur-sm border border-white/10"
               aria-label="Next image"
             >
+<<<<<<< HEAD
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
+=======
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"/></svg>
+>>>>>>> origin/main
             </button>
           </div>
         )}
 
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-300">
+<<<<<<< HEAD
           <span className="bg-black/80 border border-[#d4af37] text-[#d4af37] px-4 py-1.5 text-[10px] uppercase font-black tracking-widest backdrop-blur-sm shadow-2xl">
             Details
           </span>
+=======
+           <span className="bg-black/80 border border-[#d4af37] text-[#d4af37] px-4 py-1.5 text-[10px] uppercase font-black tracking-widest backdrop-blur-sm shadow-2xl">
+             Details
+           </span>
+>>>>>>> origin/main
         </div>
 
         {hasMultipleImages && (
           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
             {record.imageUrls.map((_, i) => (
+<<<<<<< HEAD
               <div
                 key={i}
                 className={`h-1 rounded-full transition-all ${i === currentImgIndex ? 'bg-[#d4af37] w-4' : 'bg-white/40 w-1'}`}
+=======
+              <div 
+                key={i} 
+                className={`h-1 rounded-full transition-all ${i === currentImgIndex ? 'bg-[#d4af37] w-4' : 'bg-white/40 w-1'}`} 
+>>>>>>> origin/main
               />
             ))}
           </div>
@@ -107,6 +142,7 @@ const RecordCard: React.FC<RecordCardProps> = ({ record, onAddToCart, onViewDeta
           <div className="flex flex-col">
             <span className="text-[#d4af37] text-[9px] uppercase tracking-[0.2em] font-black mb-1">Price</span>
             <div className="flex flex-col">
+<<<<<<< HEAD
               <p className={`font-black text-white tracking-tighter ${isUponRequest || isSoldOut ? 'text-sm uppercase tracking-widest' : 'text-2xl'}`}>
                 {typeof record.price === 'number'
                   ? `€${record.price.toFixed(2)}`
@@ -114,16 +150,29 @@ const RecordCard: React.FC<RecordCardProps> = ({ record, onAddToCart, onViewDeta
                 }
               </p>
               {!isUponRequest && !isSoldOut && <span className="text-[8px] text-zinc-500 font-bold uppercase tracking-widest">(excl. shipping)</span>}
+=======
+              <p className={`font-black text-white tracking-tighter ${isUponRequest ? 'text-sm uppercase tracking-widest' : 'text-2xl'}`}>
+                {typeof record.price === 'number' ? `€${record.price.toFixed(2)}` : 'Upon Request'}
+              </p>
+              {!isUponRequest && <span className="text-[8px] text-zinc-500 font-bold uppercase tracking-widest">(excl. shipping)</span>}
+>>>>>>> origin/main
             </div>
           </div>
 
           <button
             onClick={handleAddToCart}
+<<<<<<< HEAD
             disabled={isSoldOut}
             className={`px-6 py-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all border ${isSoldOut ? 'opacity-20 grayscale cursor-not-allowed border-zinc-800 text-zinc-500' : isAdding ? 'bg-white text-black border-white' : 'bg-[#b22222] border-[#b22222] text-white shadow-[0_4px_15px_rgba(178,34,34,0.4)]'} ${!isSoldOut && 'hover:bg-white hover:border-white hover:text-black cursor-pointer hover:shadow-white/20'} relative overflow-hidden`}
           >
             <span className={`inline-block transition-transform duration-300 ${isAdding ? '-translate-y-12' : 'translate-y-0'}`}>
               {isSoldOut ? 'Sold Out' : 'Add To Cart'}
+=======
+            className={`px-6 py-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all border ${isAdding ? 'bg-white text-black border-white' : 'bg-[#b22222] border-[#b22222] text-white shadow-[0_4px_15px_rgba(178,34,34,0.4)]'} hover:bg-white hover:border-white hover:text-black cursor-pointer hover:shadow-white/20 relative overflow-hidden`}
+          >
+            <span className={`inline-block transition-transform duration-300 ${isAdding ? '-translate-y-12' : 'translate-y-0'}`}>
+              Add To Cart
+>>>>>>> origin/main
             </span>
             <span className={`absolute inset-0 flex items-center justify-center transition-transform duration-300 ${isAdding ? 'translate-y-0' : 'translate-y-12'}`}>
               Added!
