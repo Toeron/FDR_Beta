@@ -174,11 +174,12 @@ const App: React.FC = () => {
       }
 
       if (!response.ok) {
-        const errorText = await response.text();
+        const errorText = await response.text().catch(() => 'No error details');
+        console.error('Server error details:', errorText);
         if (errorText.trim().toLowerCase().startsWith('<!doctype html')) {
-          throw new Error('Access Denied: Sheet is private.');
+          throw new Error('Access Denied: Sheet is private. (Details: ' + errorText + ')');
         }
-        throw new Error(`Data fetch failed: ${response.status}`);
+        throw new Error(`Data fetch failed: ${response.status} - ${errorText}`);
       }
       const csvData = await response.text();
       const parsedRecords = parseCSV(csvData);
