@@ -155,24 +155,22 @@ const App: React.FC = () => {
     try {
       setLoading(true);
 
-      // 1. Try fetching via Netlify Function (Production/Beta)
-      // This is the secure way to fetch without exposing the secret URL in the bundle
       let response;
-      try {
-        response = await fetch('/.netlify/functions/get-sheet');
-        if (!response.ok) throw new Error('Proxy failed');
-      } catch (proxyError) {
-        // 2. Fallback to direct fetch if proxy fails or we are in local dev
+
+      // In development, we can fetch directly for speed and simplicity
+      if (import.meta.env.DEV) {
         const rawUrl = GOOGLE_SHEET_CSV_URL;
-        if (!rawUrl) {
-          setError('Inventory source not configured.');
-          setLoading(false);
-          return;
+        if (rawUrl) {
+          const normalizedUrl = normalizeSheetUrl(rawUrl);
+          const separator = normalizedUrl.includes('?') ? '&' : '?';
+          const fetchUrl = `${normalizedUrl}${separator}t=${Date.now()}`;
+          response = await fetch(fetchUrl);
         }
-        const normalizedUrl = normalizeSheetUrl(rawUrl);
-        const separator = normalizedUrl.includes('?') ? '&' : '?';
-        const fetchUrl = `${normalizedUrl}${separator}t=${Date.now()}`;
-        response = await fetch(fetchUrl);
+      }
+
+      // In production (or if dev fetch failed), use the secure Netlify Function proxy
+      if (!response || !response.ok) {
+        response = await fetch('/.netlify/functions/get-sheet');
       }
 
       if (!response.ok) {

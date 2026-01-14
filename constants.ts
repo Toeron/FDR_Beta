@@ -8,6 +8,7 @@ export const GENRES: Genre[] = ['All', 'Metal', 'Hardrock', 'Thrash', 'Death Met
  * In your Render.com Dashboard, set VITE_GOOGLE_SHEET_CSV_URL to your spreadsheet link.
  * The App will automatically normalize it to a CSV export format.
  */
+// This variable is only for local development. In production, we use the Netlify Function proxy.
 export const GOOGLE_SHEET_CSV_URL = import.meta.env.VITE_GOOGLE_SHEET_CSV_URL || '';
 
 export const MOCK_RECORDS = [
