@@ -32,7 +32,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, items, onUpdateQuantity, o
             <img src="/FDR_Logo.png" alt="Logo" className="h-10 w-auto" />
             <div>
               <h2 className="font-metal text-[#d4af37] text-xl uppercase tracking-widest">Your Haul</h2>
-              <p className="text-[#d4af37]/80 text-[10px] uppercase tracking-[0.2em] font-black">{items.length} Artifacts</p>
+              <p className="text-[#d4af37]/80 text-[10px] uppercase tracking-[0.2em] font-black">{items.length} Albums</p>
             </div>
           </div>
           <button onClick={onClose} className="text-zinc-400 hover:text-white transition-colors bg-zinc-900 p-2 rounded-full border border-zinc-800">
@@ -88,7 +88,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, items, onUpdateQuantity, o
               <div className="text-right">
                 <span className="text-[#d4af37] text-4xl font-black tracking-tighter drop-shadow-lg">€{numericTotal.toFixed(2)}</span>
                 {hasUponRequestItems && (
-                  <p className="text-[9px] text-[#d4af37] uppercase font-black tracking-widest mt-1">+ Additional Artifacts (Upon Request)</p>
+                  <p className="text-[9px] text-[#d4af37] uppercase font-black tracking-widest mt-1">+ Additional Albums (Upon Request)</p>
                 )}
               </div>
             </div>
