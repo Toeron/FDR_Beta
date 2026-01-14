@@ -152,41 +152,47 @@ const App: React.FC = () => {
   const [selectedRecord, setSelectedRecord] = useState<Record | null>(null);
 
   const fetchData = async () => {
-    const rawUrl = GOOGLE_SHEET_CSV_URL;
-    if (!rawUrl) {
-      setError('Inventory source not configured.');
-      setLoading(false);
-      return;
-    }
-
-    const normalizedUrl = normalizeSheetUrl(rawUrl);
-
     try {
       setLoading(true);
-      const separator = normalizedUrl.includes('?') ? '&' : '?';
-      const fetchUrl = `${normalizedUrl}${separator}t=${Date.now()}`;
 
-      const response = await fetch(fetchUrl);
+      // 1. Try fetching via Netlify Function (Production/Beta)
+      // This is the secure way to fetch without exposing the secret URL in the bundle
+      let response;
+      try {
+        response = await fetch('/.netlify/functions/get-sheet');
+        if (!response.ok) throw new Error('Proxy failed');
+      } catch (proxyError) {
+        // 2. Fallback to direct fetch if proxy fails or we are in local dev
+        const rawUrl = GOOGLE_SHEET_CSV_URL;
+        if (!rawUrl) {
+          setError('Inventory source not configured.');
+          setLoading(false);
+          return;
+        }
+        const normalizedUrl = normalizeSheetUrl(rawUrl);
+        const separator = normalizedUrl.includes('?') ? '&' : '?';
+        const fetchUrl = `${normalizedUrl}${separator}t=${Date.now()}`;
+        response = await fetch(fetchUrl);
+      }
 
       if (!response.ok) {
-        throw new Error(`Sync Error: ${response.status}. Ensure your Sheet is Public.`);
+        const errorText = await response.text();
+        if (errorText.trim().toLowerCase().startsWith('<!doctype html')) {
+          throw new Error('Access Denied: Sheet is private.');
+        }
+        throw new Error(`Data fetch failed: ${response.status}`);
       }
-      const text = await response.text();
-
-      if (text.trim().toLowerCase().startsWith('<!doctype html')) {
-        throw new Error('Access Denied: Sheet is private.');
-      }
-
-      const parsedData = parseCSV(text);
-      if (parsedData.length === 0) {
+      const csvData = await response.text();
+      const parsedRecords = parseCSV(csvData);
+      if (parsedRecords.length === 0) {
         throw new Error('Sync Error: Could not parse inventory data.');
       }
 
-      setRecords(parsedData);
+      setRecords(parsedRecords);
       setError(null);
     } catch (err) {
-      console.error('Inventory Fetch Error:', err);
-      setError(err instanceof Error ? err.message : 'Unable to sync live inventory.');
+      console.error('Fetch error:', err);
+      setError('Connection with archive lost. Retrying...');
     } finally {
       setLoading(false);
     }
