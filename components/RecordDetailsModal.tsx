@@ -117,7 +117,6 @@ const RecordDetailsModal: React.FC<RecordDetailsModalProps> = ({ record, onClose
           <div className="mb-8">
             <div className="flex flex-wrap items-center gap-3 mb-4">
               <p className="text-[#d4af37] font-metal text-[10px] uppercase tracking-[0.5em] flex items-center gap-3 font-black">
-
                 <span className="h-px w-6 bg-[#d4af37]/40"></span>
                 {record.genre}
                 <span className="h-px w-6 bg-[#d4af37]/40"></span>
@@ -125,6 +124,16 @@ const RecordDetailsModal: React.FC<RecordDetailsModalProps> = ({ record, onClose
               {record.catalogNumber && (
                 <span className="bg-white/10 text-white/60 text-[9px] font-black px-2 py-0.5 uppercase tracking-widest rounded-sm border border-white/5">
                   REF: {record.catalogNumber}
+                </span>
+              )}
+              {record.year && (
+                <span className="bg-white/10 text-[#d4af37] text-[9px] font-black px-2 py-0.5 uppercase tracking-widest rounded-sm border border-[#d4af37]/20">
+                  YEAR: {record.year}
+                </span>
+              )}
+              {record.format && (
+                <span className="bg-[#d4af37]/10 text-white text-[9px] font-black px-2 py-0.5 uppercase tracking-widest rounded-sm border border-[#d4af37]/30">
+                  {record.format}
                 </span>
               )}
             </div>

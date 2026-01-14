@@ -3,9 +3,11 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Record, FilterState, CartItem } from './types';
 import { GOOGLE_SHEET_CSV_URL } from './constants';
 import RecordCard from './components/RecordCard';
+import FeaturedRecordCard from './components/FeaturedRecordCard';
 import FilterBar from './components/FilterBar';
 import Cart from './components/Cart';
 import RecordDetailsModal from './components/RecordDetailsModal';
+import { gsap } from 'gsap';
 
 /**
  * Normalizes any Google Sheet link into a reliable CSV export link.
@@ -75,7 +77,10 @@ const parseCSV = (csvText: string): Record[] => {
     notes: getIndex(['notes', 'archive', 'info', 'comment']),
     imageStart: getIndex(['image', 'pic', 'photo', 'url']),
     buyLink: getIndex(['buy', 'link', 'order', 'mailto']),
-    tracklist: getIndex(['tracklist', 'tracks', 'songs', 'content'])
+    tracklist: getIndex(['tracklist', 'tracks', 'songs', 'content']),
+    featured: getIndex(['featured', 'promo', 'highlight']),
+    year: getIndex(['year', 'date', 'released']),
+    format: getIndex(['format', 'media', 'type', 'press'])
   };
 
   if (indices.artist === -1) indices.artist = 0;
@@ -129,7 +134,10 @@ const parseCSV = (csvText: string): Record[] => {
       buyLink: clean(indices.buyLink) || `mailto:Kips1963@gmail.com?subject=Inquiry: ${artist} - ${title}`,
 
       tracklist: indices.tracklist !== -1 ? clean(indices.tracklist) : undefined,
-      notes: clean(indices.notes) || undefined
+      notes: clean(indices.notes) || undefined,
+      isFeatured: clean(indices.featured).toLowerCase() === 'yes',
+      year: indices.year !== -1 ? clean(indices.year) : undefined,
+      format: indices.format !== -1 ? clean(indices.format) : undefined
     };
   });
 };
@@ -197,12 +205,50 @@ const App: React.FC = () => {
       return (
         record.artist.toLowerCase().includes(query) ||
         record.title.toLowerCase().includes(query) ||
-
         record.genre.toLowerCase().includes(query) ||
         (record.catalogNumber && record.catalogNumber.toLowerCase().includes(query))
       );
     });
   }, [records, filters]);
+
+  const { featuredRecords, normalRecords } = useMemo(() => {
+    const featured = filteredRecords.filter((r: Record) => r.isFeatured);
+    const normal = filteredRecords.filter((r: Record) => !r.isFeatured);
+    return { featuredRecords: featured, normalRecords: normal };
+  }, [filteredRecords]);
+
+  const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
+  const featuredRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (featuredRecords.length <= 1) {
+      setCurrentFeaturedIndex(0);
+      return;
+    }
+
+    const interval = setInterval(() => {
+      const nextIndex = (currentFeaturedIndex + 1) % featuredRecords.length;
+
+      // GSAP Animation Out
+      gsap.to(featuredRef.current, {
+        opacity: 0,
+        x: -20,
+        scale: 0.98,
+        duration: 0.4,
+        ease: 'power2.in',
+        onComplete: () => {
+          setCurrentFeaturedIndex(nextIndex);
+          // GSAP Animation In
+          gsap.fromTo(featuredRef.current,
+            { opacity: 0, x: 20, scale: 0.98 },
+            { opacity: 1, x: 0, scale: 1, duration: 0.6, ease: 'back.out(1.7)' }
+          );
+        }
+      });
+    }, 6000);
+
+    return () => clearInterval(interval);
+  }, [featuredRecords.length, currentFeaturedIndex]);
 
   const addToCart = (record: Record) => {
     setCart(prev => {
@@ -297,19 +343,83 @@ const App: React.FC = () => {
           </div>
         ) : (
           <>
+            {featuredRecords.length > 0 && (
+              <section className="mb-20 overflow-hidden">
+                <div className="flex items-center gap-4 mb-10">
+                  <span className="h-px flex-grow bg-gradient-to-r from-transparent via-[#d4af37]/50 to-[#d4af37]"></span>
+                  <h2 className="font-metal text-[#d4af37] text-2xl md:text-3xl uppercase tracking-[0.4em] drop-shadow-[0_0_10px_rgba(212,175,55,0.4)]">
+                    Featured Albums
+                  </h2>
+                  <span className="h-px flex-grow bg-gradient-to-l from-transparent via-[#d4af37]/50 to-[#d4af37]"></span>
+                </div>
+
+                <div className="relative max-w-5xl mx-auto px-4">
+                  <div ref={featuredRef} className="will-change-transform">
+                    {featuredRecords[currentFeaturedIndex] && (
+                      <FeaturedRecordCard
+                        record={featuredRecords[currentFeaturedIndex]}
+                        onAddToCart={addToCart}
+                        onViewDetails={setSelectedRecord}
+                      />
+                    )}
+                  </div>
+
+                  {featuredRecords.length > 1 && (
+                    <div className="flex justify-center gap-4 mt-12">
+                      {featuredRecords.map((_, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => {
+                            if (idx === currentFeaturedIndex) return;
+                            gsap.to(featuredRef.current, {
+                              opacity: 0,
+                              x: idx > currentFeaturedIndex ? -20 : 20,
+                              duration: 0.3,
+                              onComplete: () => {
+                                setCurrentFeaturedIndex(idx);
+                                gsap.fromTo(featuredRef.current,
+                                  { opacity: 0, x: idx > currentFeaturedIndex ? 20 : -20 },
+                                  { opacity: 1, x: 0, duration: 0.5, ease: 'power2.out' }
+                                );
+                              }
+                            });
+                          }}
+                          className={`h-1.5 transition-all duration-500 rounded-full ${idx === currentFeaturedIndex
+                            ? 'w-12 bg-[#d4af37]'
+                            : 'w-3 bg-zinc-800 hover:bg-zinc-600'
+                            }`}
+                          aria-label={`Go to slide ${idx + 1}`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </section>
+            )}
+
             <div className="mb-8 flex justify-between items-center border-b border-zinc-900 pb-4">
-              <h2 className="text-[#d4af37] uppercase text-xs tracking-[0.3em] font-black">{filteredRecords.length} Artifacts Found</h2>
+              <h2 className="text-[#d4af37] uppercase text-xs tracking-[0.3em] font-black">
+                {filters.searchQuery ? `${filteredRecords.length} Results Found` : 'Full Collection'}
+              </h2>
             </div>
-            {filteredRecords.length > 0 ? (
+
+            {normalRecords.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                {filteredRecords.map((record) => <RecordCard key={record.id} record={record} onAddToCart={addToCart} onViewDetails={setSelectedRecord} />)}
+                {normalRecords.map((record: Record) => (
+                  <RecordCard
+                    key={record.id}
+                    record={record}
+                    onAddToCart={addToCart}
+                    onViewDetails={setSelectedRecord}
+                  />
+                ))}
               </div>
-            ) : (
+            ) : filteredRecords.length === 0 ? (
               <div className="text-center py-40 border border-dashed border-zinc-800 rounded-sm">
                 <p className="text-[#d4af37] font-metal text-2xl uppercase mb-2">The Vault is Empty</p>
                 <p className="text-zinc-400 text-sm">Adjust your filters to discover more treasures.</p>
               </div>
-            )}
+            ) : null}
           </>
         )}
       </main>

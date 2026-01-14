@@ -14,6 +14,9 @@ export interface Record {
   tracklist?: string;
   notes?: string;
   catalogNumber?: string;
+  year?: string;
+  format?: string;
+  isFeatured?: boolean;
 }
 
 export interface CartItem extends Record {
