@@ -157,29 +157,26 @@ const App: React.FC = () => {
 
       let response;
 
-      // In development, we can fetch directly for speed and simplicity
-      if (import.meta.env.DEV) {
+      // 1. Try fetching via Netlify Function first (Secure Proxy)
+      try {
+        response = await fetch('/.netlify/functions/get-sheet');
+        if (!response.ok) throw new Error('Proxy not found or error');
+      } catch (proxyError) {
+        // 2. Fallback: Direct Fetch (Used on Render.com or Local Dev)
         const rawUrl = GOOGLE_SHEET_CSV_URL;
         if (rawUrl) {
           const normalizedUrl = normalizeSheetUrl(rawUrl);
           const separator = normalizedUrl.includes('?') ? '&' : '?';
           const fetchUrl = `${normalizedUrl}${separator}t=${Date.now()}`;
           response = await fetch(fetchUrl);
+        } else {
+          throw new Error('No proxy and no Direct URL configured');
         }
       }
 
-      // In production (or if dev fetch failed), use the secure Netlify Function proxy
       if (!response || !response.ok) {
-        response = await fetch('/.netlify/functions/get-sheet');
-      }
-
-      if (!response.ok) {
-        const errorText = await response.text().catch(() => 'No error details');
-        console.error('Server error details:', errorText);
-        if (errorText.trim().toLowerCase().startsWith('<!doctype html')) {
-          throw new Error('Access Denied: Sheet is private. (Details: ' + errorText + ')');
-        }
-        throw new Error(`Data fetch failed: ${response.status} - ${errorText}`);
+        const errorText = response ? await response.text().catch(() => 'No details') : 'Service Unreachable';
+        throw new Error(`Data fetch failed: ${response?.status || '500'} - ${errorText}`);
       }
       const csvData = await response.text();
       const parsedRecords = parseCSV(csvData);
