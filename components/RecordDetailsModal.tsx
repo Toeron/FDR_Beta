@@ -73,7 +73,7 @@ const RecordDetailsModal: React.FC<RecordDetailsModalProps> = ({ record, onClose
             ))}
 
             {isSoldOut && (
-              <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] flex items-center justify-center z-20 pointer-events-none">
+              <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-20 pointer-events-none">
                 <div className="bg-[#b22222] text-white px-12 py-3 -rotate-12 border-2 border-white/20 shadow-[0_0_40px_rgba(178,34,34,0.6)]">
                   <span className="font-metal text-4xl uppercase tracking-[0.2em] drop-shadow-md">Sold Out</span>
                 </div>

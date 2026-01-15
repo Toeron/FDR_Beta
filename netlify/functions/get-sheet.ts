@@ -5,8 +5,14 @@
 const normalizeSheetUrl = (url: string): string => {
     if (!url) return '';
     const match = url.match(/[-\w]{25,}/);
+    const gidMatch = url.match(/gid=([0-9]+)/);
+
     if (match && match[0]) {
-        return `https://docs.google.com/spreadsheets/d/${match[0]}/export?format=csv`;
+        let baseUrl = `https://docs.google.com/spreadsheets/d/${match[0]}/export?format=csv`;
+        if (gidMatch && gidMatch[1]) {
+            baseUrl += `&gid=${gidMatch[1]}`;
+        }
+        return baseUrl;
     }
     return url;
 };

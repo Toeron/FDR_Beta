@@ -29,7 +29,7 @@ const FeaturedRecordCard: React.FC<FeaturedRecordCardProps> = ({ record, onAddTo
             {/* Featured Badge */}
             <div className="absolute top-0 left-0 z-20">
                 <div className="bg-[#d4af37] text-black text-[9px] font-black px-4 py-1.5 uppercase tracking-widest shadow-2xl skew-x-[-12deg] -ml-2">
-                    Featured Release
+                    Newest Release
                 </div>
             </div>
 

@@ -15,19 +15,34 @@ import { gsap } from 'gsap';
 const normalizeSheetUrl = (url: string): string => {
   if (!url) return '';
   const match = url.match(/[-\w]{25,}/);
+  const gidMatch = url.match(/gid=([0-9]+)/);
 
   if (match && match[0]) {
-    return `https://docs.google.com/spreadsheets/d/${match[0]}/export?format=csv`;
+    let baseUrl = `https://docs.google.com/spreadsheets/d/${match[0]}/export?format=csv`;
+    if (gidMatch && gidMatch[1]) {
+      baseUrl += `&gid=${gidMatch[1]}`;
+    }
+    return baseUrl;
   }
   return url;
 };
 
 const transformDriveUrl = (url: string): string => {
-  if (!url || !url.includes('drive.google.com')) return url;
-  const match = url.match(/(?:id=|d\/)([^/&?]+)/);
-  if (match && match[1]) {
-    return `https://lh3.googleusercontent.com/d/${match[1]}`;
+  if (!url) return url;
+
+  // Google Drive logic
+  if (url.includes('drive.google.com')) {
+    const match = url.match(/(?:id=|d\/)([^/&?]+)/);
+    if (match && match[1]) {
+      return `https://lh3.googleusercontent.com/d/${match[1]}`;
+    }
   }
+
+  // Discogs and general hotlinking protection bypass
+  if (url.includes('discogs.com') || url.includes('i.discogs.com')) {
+    return `https://images.weserv.nl/?url=${encodeURIComponent(url)}&default=https://images.unsplash.com/photo-1603048588665-791ca8aea617?q=80&w=600&auto=format&fit=crop`;
+  }
+
   return url;
 };
 
@@ -78,7 +93,7 @@ const parseCSV = (csvText: string): Record[] => {
     imageStart: getIndex(['image', 'pic', 'photo', 'url']),
     buyLink: getIndex(['buy', 'link', 'order', 'mailto']),
     tracklist: getIndex(['tracklist', 'tracks', 'songs', 'content']),
-    featured: getIndex(['featured', 'promo', 'highlight']),
+    featured: getIndex(['new', 'featured', 'promo', 'highlight']),
     year: getIndex(['year', 'date', 'released']),
     format: getIndex(['format', 'media', 'type', 'press'])
   };
@@ -161,7 +176,14 @@ const App: React.FC = () => {
       try {
         response = await fetch('/.netlify/functions/get-sheet');
         if (!response.ok) throw new Error('Proxy not found or error');
+
+        // Peek at the data to ensure it's not index.html
+        const text = await response.clone().text();
+        if (text.trim().toLowerCase().startsWith('<!doctype html') || text.toLowerCase().includes('<html')) {
+          throw new Error('Proxy returned HTML (fallback/redirection). Falling back to direct fetch.');
+        }
       } catch (proxyError) {
+        console.log('Proxy fetch skipped or failed, falling back to direct:', proxyError);
         // 2. Fallback: Direct Fetch (Used on Render.com or Local Dev)
         const rawUrl = GOOGLE_SHEET_CSV_URL;
         if (rawUrl) {
@@ -178,6 +200,7 @@ const App: React.FC = () => {
         const errorText = response ? await response.text().catch(() => 'No details') : 'Service Unreachable';
         throw new Error(`Data fetch failed: ${response?.status || '500'} - ${errorText}`);
       }
+
       const csvData = await response.text();
       const parsedRecords = parseCSV(csvData);
       if (parsedRecords.length === 0) {
@@ -187,7 +210,7 @@ const App: React.FC = () => {
       setRecords(parsedRecords);
       setError(null);
     } catch (err) {
-      console.error('Fetch error:', err);
+      console.error('Fetch error details:', err);
       setError('Connection with archive lost. Retrying...');
     } finally {
       setLoading(false);
@@ -350,7 +373,7 @@ const App: React.FC = () => {
                 <div className="flex items-center gap-4 mb-10">
                   <span className="h-px flex-grow bg-gradient-to-r from-transparent via-[#d4af37]/50 to-[#d4af37]"></span>
                   <h2 className="font-metal text-[#d4af37] text-2xl md:text-3xl uppercase tracking-[0.4em] drop-shadow-[0_0_10px_rgba(212,175,55,0.4)]">
-                    Featured Albums
+                    Newest Releases
                   </h2>
                   <span className="h-px flex-grow bg-gradient-to-l from-transparent via-[#d4af37]/50 to-[#d4af37]"></span>
                 </div>
