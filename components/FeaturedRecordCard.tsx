@@ -10,8 +10,20 @@ interface FeaturedRecordCardProps {
 
 const FeaturedRecordCard: React.FC<FeaturedRecordCardProps> = ({ record, onAddToCart, onViewDetails }) => {
     const [isAdding, setIsAdding] = useState(false);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const isSoldOut = record.price === 'Sold Out';
     const isUponRequest = record.price === 'Upon Request';
+
+    React.useEffect(() => {
+        setCurrentImageIndex(0);
+        if (record.imageUrls.length <= 1) return;
+
+        const interval = setInterval(() => {
+            setCurrentImageIndex((prev) => (prev + 1) % record.imageUrls.length);
+        }, 3000); // Cycle every 3 seconds
+
+        return () => clearInterval(interval);
+    }, [record.id, record.imageUrls.length]);
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -36,9 +48,10 @@ const FeaturedRecordCard: React.FC<FeaturedRecordCardProps> = ({ record, onAddTo
             {/* Left: Smaller Image Section (approx 40% width on md+) */}
             <div className="relative w-full md:w-[40%] aspect-square md:aspect-auto overflow-hidden bg-zinc-900 border-r border-zinc-900">
                 <img
-                    src={record.imageUrls[0]}
+                    key={currentImageIndex}
+                    src={record.imageUrls[currentImageIndex]}
                     alt={`${record.artist} - ${record.title}`}
-                    className="w-full h-full object-contain transition-transform duration-1000 group-hover:scale-110"
+                    className="w-full h-full object-contain transition-all duration-1000 group-hover:scale-110 animate-img-fade"
                     loading="eager"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60"></div>
