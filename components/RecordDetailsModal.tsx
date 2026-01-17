@@ -65,7 +65,7 @@ const RecordDetailsModal: React.FC<RecordDetailsModalProps> = ({ record, onClose
                 key={`${record.id}-img-${i}`}
                 src={url}
                 alt={`${record.artist} - ${record.title} - Image ${i + 1}`}
-                className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-in-out hover:scale-110 ${i === imgIndex ? 'opacity-100 scale-100' : 'opacity-0 scale-105 pointer-events-none'}`}
+                className={`absolute inset-0 w-full h-full object-contain transition-all duration-1000 ease-in-out hover:scale-110 ${i === imgIndex ? 'opacity-100 scale-100' : 'opacity-0 scale-105 pointer-events-none'}`}
                 loading={i === imgIndex ? "eager" : "lazy"}
                 decoding="async"
                 onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1603048588665-791ca8aea617?q=80&w=600&auto=format&fit=crop'; }}
@@ -73,8 +73,8 @@ const RecordDetailsModal: React.FC<RecordDetailsModalProps> = ({ record, onClose
             ))}
 
             {isSoldOut && (
-              <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-20 pointer-events-none">
-                <div className="bg-[#b22222] text-white px-12 py-3 -rotate-12 border-2 border-white/20 shadow-[0_0_40px_rgba(178,34,34,0.6)]">
+              <div className="absolute inset-0 bg-transparent flex items-center justify-center z-20 pointer-events-none">
+                <div className="bg-[#b22222] text-white px-12 py-3 -rotate-12 border-2 border-white/20 shadow-[0_0_40px_rgba(178,34,34,0.6)] opacity-70">
                   <span className="font-metal text-4xl uppercase tracking-[0.2em] drop-shadow-md">Sold Out</span>
                 </div>
               </div>

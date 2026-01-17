@@ -38,7 +38,7 @@ const FeaturedRecordCard: React.FC<FeaturedRecordCardProps> = ({ record, onAddTo
                 <img
                     src={record.imageUrls[0]}
                     alt={`${record.artist} - ${record.title}`}
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                    className="w-full h-full object-contain transition-transform duration-1000 group-hover:scale-110"
                     loading="eager"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60"></div>

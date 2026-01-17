@@ -52,7 +52,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, items, onUpdateQuantity, o
             items.map((item) => (
               <div key={item.id} className="flex gap-5 group animate-in slide-in-from-right-4 duration-300 border-b border-zinc-900 pb-6 last:border-0">
                 <div className="w-24 h-24 bg-zinc-900 overflow-hidden border border-zinc-800 shadow-xl flex-shrink-0">
-                  <img src={item.imageUrls[0]} alt={item.title} className="w-full h-full object-cover" />
+                  <img src={item.imageUrls[0]} alt={item.title} className="w-full h-full object-contain" />
                 </div>
                 <div className="flex-grow">
                   <h3 className="text-white text-lg font-black leading-tight mb-1 group-hover:text-[#d4af37] transition-colors font-metal">{item.artist}</h3>

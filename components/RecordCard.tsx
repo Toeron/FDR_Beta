@@ -43,7 +43,7 @@ const RecordCard: React.FC<RecordCardProps> = ({ record, onAddToCart, onViewDeta
         <img
           src={record.imageUrls[currentImgIndex]}
           alt={`${record.artist} - ${record.title}`}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
           loading="lazy"
           decoding="async"
           onError={(e) => {
@@ -51,8 +51,8 @@ const RecordCard: React.FC<RecordCardProps> = ({ record, onAddToCart, onViewDeta
           }}
         />
         {isSoldOut && (
-          <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10 pointer-events-none">
-            <div className="bg-[#b22222] text-white px-8 py-2 -rotate-12 border-2 border-white/20 shadow-[0_0_20px_rgba(178,34,34,0.6)]">
+          <div className="absolute inset-0 bg-transparent flex items-center justify-center z-10 pointer-events-none">
+            <div className="bg-[#b22222] text-white px-8 py-2 -rotate-12 border-2 border-white/20 shadow-[0_0_20px_rgba(178,34,34,0.6)] opacity-70">
               <span className="font-metal text-2xl uppercase tracking-[0.2em] drop-shadow-md">Sold Out</span>
             </div>
           </div>
