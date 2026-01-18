@@ -1,6 +1,6 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Record } from '../types';
+import { gsap } from 'gsap';
 
 interface FeaturedRecordCardProps {
     record: Record;
@@ -11,19 +11,51 @@ interface FeaturedRecordCardProps {
 const FeaturedRecordCard: React.FC<FeaturedRecordCardProps> = ({ record, onAddToCart, onViewDetails }) => {
     const [isAdding, setIsAdding] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [prevImageIndex, setPrevImageIndex] = useState<number | null>(null);
+    const imgContainerRef = useRef<HTMLDivElement>(null);
+
     const isSoldOut = record.price === 'Sold Out';
     const isUponRequest = record.price === 'Upon Request';
 
-    React.useEffect(() => {
+    // Reset indices when record changes
+    useEffect(() => {
         setCurrentImageIndex(0);
+        setPrevImageIndex(null);
+    }, [record.id]);
+
+    // Internal cycling interval
+    useEffect(() => {
         if (record.imageUrls.length <= 1) return;
 
         const interval = setInterval(() => {
+            setPrevImageIndex(currentImageIndex);
             setCurrentImageIndex((prev) => (prev + 1) % record.imageUrls.length);
-        }, 3000); // Cycle every 3 seconds
+        }, 4000);
 
         return () => clearInterval(interval);
-    }, [record.id, record.imageUrls.length]);
+    }, [record.id, record.imageUrls.length, currentImageIndex]);
+
+    // GSAP Cross-fade Animation
+    useEffect(() => {
+        if (imgContainerRef.current && prevImageIndex !== null) {
+            const container = imgContainerRef.current;
+            const outgoing = container.querySelectorAll('.outgoing-img');
+            const incoming = container.querySelector('.incoming-img');
+
+            // Fade out the old image layers
+            if (outgoing.length > 0) {
+                gsap.to(outgoing, { opacity: 0, duration: 1.5, ease: 'power2.inOut' });
+            }
+
+            // Fade in the new image
+            if (incoming) {
+                gsap.fromTo(incoming,
+                    { opacity: 0, scale: 1.02 },
+                    { opacity: 1, scale: 1, duration: 1.5, ease: 'power2.inOut' }
+                );
+            }
+        }
+    }, [currentImageIndex, prevImageIndex]);
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -45,21 +77,32 @@ const FeaturedRecordCard: React.FC<FeaturedRecordCardProps> = ({ record, onAddTo
                 </div>
             </div>
 
-            {/* Left: Smaller Image Section (approx 40% width on md+) */}
-            <div className="relative w-full md:w-[40%] aspect-square md:aspect-auto overflow-hidden bg-zinc-900 border-r border-zinc-900">
+            {/* Left: Image Section */}
+            <div ref={imgContainerRef} className="relative w-full md:w-[40%] aspect-square overflow-hidden bg-zinc-900 border-r border-zinc-900 flex items-center justify-center">
+                {/* Outgoing Image */}
+                {prevImageIndex !== null && (
+                    <img
+                        src={record.imageUrls[prevImageIndex]}
+                        alt=""
+                        className="outgoing-img absolute inset-0 w-full h-full object-contain z-0"
+                    />
+                )}
+
+                {/* Incoming Image */}
                 <img
-                    key={currentImageIndex}
+                    key={`${record.id}-${currentImageIndex}`}
                     src={record.imageUrls[currentImageIndex]}
                     alt={`${record.artist} - ${record.title}`}
-                    className="w-full h-full object-contain transition-all duration-1000 group-hover:scale-110 animate-img-fade"
+                    className="incoming-img relative z-10 w-full h-full object-contain"
                     loading="eager"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60"></div>
+
+                {/* Vignette Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 z-20"></div>
             </div>
 
-            {/* Right: Detailed Content */}
+            {/* Right: Content Section */}
             <div className="flex-grow p-6 md:p-8 flex flex-col justify-between relative overflow-hidden">
-                {/* Background Accent */}
                 <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-[#d4af37]/5 rounded-full blur-3xl pointer-events-none"></div>
 
                 <div>
@@ -96,7 +139,6 @@ const FeaturedRecordCard: React.FC<FeaturedRecordCardProps> = ({ record, onAddTo
                                 <span className="text-white text-xs font-bold uppercase tracking-wider">{record.format || 'Vinyl LP'}</span>
                             </div>
                         </div>
-
                         <div className="h-px bg-gradient-to-r from-zinc-900 via-zinc-800 to-transparent"></div>
                     </div>
                 </div>
